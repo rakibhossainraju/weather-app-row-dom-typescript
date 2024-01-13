@@ -1,6 +1,7 @@
 # Weather App using OOP and TypeScript
 
 This project is an Object-Oriented Programming (OOP) style implementation of a Weather App using TypeScript. The app allows users to search for weather information in different cities. It leverages the OpenWeatherMap API for weather data and the Countries API for city suggestions.
+## [*Live site*](https://rakibhossainraju.github.io/weather-app/)
 
 ## Features
 
