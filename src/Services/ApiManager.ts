@@ -1,17 +1,18 @@
-export  interface WeatherDataType {
+export interface WeatherDataType {
   weather: { description: string; icon: string }[];
   wind: { speed: string };
   main: { temp: number; humidity: string };
   sys: { country: string };
   name: string;
 }
+
 export type CitiesType = string[];
 
 export class ApiManager {
   readonly #apiKey: string;
   readonly url: string;
 
-  constructor(_apiKey: string = "", url: string) {
+  constructor(_apiKey: string = '', url: string) {
     this.#apiKey = _apiKey;
     this.url = url;
   }
@@ -43,11 +44,11 @@ export class ApiManager {
       return data
         .map(
           (countyWithDetails: { cities: CitiesType }) =>
-            countyWithDetails.cities,
+            countyWithDetails.cities
         )
         .reduce(
           (cities: CitiesType, array: CitiesType) => cities.concat(array),
-          [],
+          []
         );
     } catch (error) {
       throw error;

@@ -9,6 +9,7 @@ This project is an Object-Oriented Programming (OOP) style implementation of a W
 - **API Management**: The `ApiManager` class handles API requests for both weather and country data, encapsulating the logic and providing a convenient interface.
 - **Interactive UI**: The `WeatherApp` class manages the interaction with the DOM, providing an intuitive interface for users to input city names and receive weather information.
 - **Suggestions**: The app suggests city names based on user input, enhancing the user experience.
+- **Code Formatting**: The project uses Prettier with customized rules for consistent code formatting, including extended line length for improved readability.
 
 ## Code Structure
 
@@ -37,10 +38,20 @@ The `WeatherApp` class manages the interaction with the DOM and user input.
   - `generateSuggestionLiTemplate(textContent: string): string`: Generates the HTML template for a suggested city name.
   - `updateUiWithWeatherData(weatherData: WeatherDataType)`: Updates the UI with weather data after a successful API request.
 
-## How to Use
+## Code Formatting
 
-1. Clone the repository.
-2. Open the `index.html` file in a web browser.
-3. Enter a city name in the search bar and submit the form to get weather information.
+The project uses Prettier for consistent code formatting with the following configuration:
 
-Feel free to explore and modify the code to enhance the functionality or style based on your preferences. Happy coding!
+```json
+{
+  "semi": true,
+  "trailingComma": "es5",
+  "singleQuote": true,
+  "printWidth": 140,
+  "tabWidth": 2,
+  "useTabs": false,
+  "bracketSpacing": true,
+  "arrowParens": "avoid",
+  "endOfLine": "lf"
+}
+``
