@@ -2,18 +2,18 @@ import './style.css';
 import { ApiManager, CitiesType, WeatherDataType } from './Services/ApiManager.ts';
 
 class WeatherApp {
-  #qs = <T extends HTMLElement>(selector: string): T | null => document.querySelector<T>(selector);
-  readonly formElement = this.#qs<HTMLFormElement>('.search-bar');
-  readonly inputElement = this.#qs<HTMLInputElement>('.search-bar__input');
-  readonly suggestionsElement = this.#qs<HTMLUListElement>('.search-bar__suggestions');
-  readonly inputWrapperElement = this.#qs<HTMLDivElement>('.search-bar__input-wrapper');
-  readonly weatherImgElement = this.#qs<HTMLDivElement>('.weather-card__weather-image');
-  readonly weatherDetailsElement = this.#qs<HTMLParagraphElement>('.weather-card__weather-description');
-  readonly temperatureElement = this.#qs<HTMLSpanElement>('.weather-card__temperature-value');
-  readonly cityNameElement = this.#qs<HTMLSpanElement>('.weather-card__city');
-  readonly countryNameElement = this.#qs<HTMLSpanElement>('.weather-card__country');
-  readonly humidityElement = this.#qs<HTMLSpanElement>('.weather-card__humidity-text-value');
-  readonly windSpeedElement = this.#qs<HTMLSpanElement>('.weather-_wind-text-value');
+  private readonly qs = <T extends HTMLElement>(selector: string): T | null => document.querySelector<T>(selector);
+  private readonly formElement = this.qs<HTMLFormElement>('.search-bar');
+  private readonly inputElement = this.qs<HTMLInputElement>('.search-bar__input');
+  private readonly suggestionsElement = this.qs<HTMLUListElement>('.search-bar__suggestions');
+  private readonly inputWrapperElement = this.qs<HTMLDivElement>('.search-bar__input-wrapper');
+  private readonly weatherImgElement = this.qs<HTMLDivElement>('.weather-card__weather-image');
+  private readonly weatherDetailsElement = this.qs<HTMLParagraphElement>('.weather-card__weather-description');
+  private readonly temperatureElement = this.qs<HTMLSpanElement>('.weather-card__temperature-value');
+  private readonly cityNameElement = this.qs<HTMLSpanElement>('.weather-card__city');
+  private readonly countryNameElement = this.qs<HTMLSpanElement>('.weather-card__country');
+  private readonly humidityElement = this.qs<HTMLSpanElement>('.weather-card__humidity-text-value');
+  private readonly windSpeedElement = this.qs<HTMLSpanElement>('.weather-_wind-text-value');
 
   constructor() {
     this.initializeApp();
