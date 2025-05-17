@@ -13,7 +13,7 @@ class WeatherApp {
   private readonly cityNameElement = this.qs<HTMLSpanElement>('.weather-card__city');
   private readonly countryNameElement = this.qs<HTMLSpanElement>('.weather-card__country');
   private readonly humidityElement = this.qs<HTMLSpanElement>('.weather-card__humidity-text-value');
-  private readonly windSpeedElement = this.qs<HTMLSpanElement>('.weather-_wind-text-value');
+  private readonly windSpeedElement = this.qs<HTMLSpanElement>('.weather-card__wind-text-value');
 
   constructor() {
     this.initializeApp();
