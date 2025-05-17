@@ -1,13 +1,10 @@
 import "./style.css";
+import {
+  ApiManager,
+  CitiesType,
+  WeatherDataType,
+} from "./Services/ApiManager.ts";
 
-interface WeatherDataType {
-  weather: { description: string; icon: string }[];
-  wind: { speed: string };
-  main: { temp: number; humidity: string };
-  sys: { country: string };
-  name: string;
-}
-type CitiesType = string[];
 type QuerySelectorType = (selector: string) => HTMLLIElement | null;
 type FormType = HTMLFormElement | null;
 type InputType = HTMLInputElement | null;
@@ -16,54 +13,6 @@ type LiType = HTMLLIElement | null;
 type DivType = HTMLDivElement | null;
 type ParagraphType = HTMLParagraphElement | null;
 type SpanType = HTMLSpanElement | null;
-
-class ApiManager {
-  readonly #apiKey: string;
-  readonly url: string;
-
-  constructor(_apiKey: string = "", url: string) {
-    this.#apiKey = _apiKey;
-    this.url = url;
-  }
-
-  async makeWeatherApiRequest(cityName: string): Promise<WeatherDataType> {
-    const url = `${this.url}?q=${cityName}&appid=${this.#apiKey}&units=metric`;
-    try {
-      const res = await fetch(url);
-      if (!res.ok)
-        throw {
-          message: `Weather API request failed with status ${res.status}`,
-          status: res.status,
-        };
-      return await res.json();
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async makeCountryApiRequest(): Promise<CitiesType> {
-    try {
-      const res = await fetch(this.url);
-      if (!res.ok)
-        throw {
-          message: `Country API request failed with status ${res.status}`,
-          status: res.status,
-        };
-      const { data } = await res.json();
-      return data
-        .map(
-          (countyWithDetails: { cities: CitiesType }) =>
-            countyWithDetails.cities,
-        )
-        .reduce(
-          (cities: CitiesType, array: CitiesType) => cities.concat(array),
-          [],
-        );
-    } catch (error) {
-      throw error;
-    }
-  }
-}
 
 class WeatherApp {
   readonly #qs: QuerySelectorType = document.querySelector.bind(document);
@@ -101,6 +50,8 @@ class WeatherApp {
       ".weather-card__humidity-text-value",
     ) as SpanType;
     this.windSpeedElement = this.#qs(".weather-_wind-text-value") as SpanType;
+
+    this.initializeApp();
   }
 
   initializeApp() {
@@ -109,64 +60,64 @@ class WeatherApp {
       this.inputWrapperElement.addEventListener("click", function () {
         this.classList.add("active");
       });
-    const handleSubmit = (event: SubmitEvent): void => {
-      event.preventDefault();
-      const cityName = this.formElement?.searchBarInput.value.trim();
-      if (!cityName) {
-        alert("Please enter a valid city name first");
-        return;
-      }
 
-      //Make weather request
-      const apiManagerForWeather: ApiManager = new ApiManager(
-        "6d07dbd973fa3969b78bcb1de1e58f0c",
-        "https://api.openweathermap.org/data/2.5/weather",
-      );
-      apiManagerForWeather
-        .makeWeatherApiRequest(cityName)
-        .then((weatherData): void => {
-          this.updateUiWithWeatherData(weatherData);
-          this.formElement && (this.formElement.searchBarInput.value = "");
-          this.suggestionsElement && (this.suggestionsElement.innerHTML = "");
-          this.inputWrapperElement?.classList.remove("active");
-        })
-        .catch((error): void => {
-          switch (error.status) {
-            case 404:
-              alert(
-                "The city name does not exist.\nPlease try to add a valid city name",
-              );
-              break;
-            default:
-              console.log(error.message);
-          }
-        });
-    };
-    this.formElement?.addEventListener("submit", handleSubmit);
-    const handleTyping = (): void => {
-      const cityPrefix: string = this.inputElement?.value.trim()!;
-      if (!cityPrefix) this.suggestionsElement?.classList.remove("active");
-
-      const apiManagerForCountry: ApiManager = new ApiManager(
-        "",
-        "https://countriesnow.space/api/v0.1/countries",
-      );
-      apiManagerForCountry
-        .makeCountryApiRequest()
-        .then((cities: CitiesType): void => {
-          const filteredCities = cities
-            .filter((city) =>
-              city.toLowerCase().startsWith(cityPrefix.toLowerCase()),
-            )
-            .slice(0, 5);
-          if (filteredCities.length) {
-            this.showSuggestedCityNameOnUi(filteredCities);
-            this.suggestionsElement?.classList.add("active");
-          } else this.suggestionsElement?.classList.remove("active");
-        });
-    };
-    this.inputElement?.addEventListener("input", handleTyping);
+    this.inputElement?.addEventListener("input", this.handleTyping);
+    this.formElement?.addEventListener("submit", this.handleSubmit);
   }
+
+  handleSubmit = async (event: SubmitEvent) => {
+    event.preventDefault();
+    const cityName = this.formElement?.searchBarInput.value.trim();
+    if (!cityName) {
+      alert("Please enter a valid city name first");
+      return;
+    }
+
+    //Make a weather request
+    const apiManagerForWeather: ApiManager = new ApiManager(
+      "6d07dbd973fa3969b78bcb1de1e58f0c",
+      "https://api.openweathermap.org/data/2.5/weather",
+    );
+    try {
+      const weatherData =
+        await apiManagerForWeather.makeWeatherApiRequest(cityName);
+      this.updateUiWithWeatherData(weatherData);
+      this.formElement && (this.formElement.searchBarInput.value = "");
+      this.suggestionsElement && (this.suggestionsElement.innerHTML = "");
+      this.inputWrapperElement?.classList.remove("active");
+    } catch (error: any) {
+      switch (error.status) {
+        case 404:
+          alert(
+            "The city name does not exist.\nPlease try to add a valid city name",
+          );
+          break;
+        default:
+          console.log(error.message);
+      }
+    }
+  };
+
+  handleTyping = () => {
+    const cityPrefix: string = this.inputElement?.value.trim()!;
+    if (!cityPrefix) this.suggestionsElement?.classList.remove("active");
+
+    const apiManagerForCountry: ApiManager = new ApiManager(
+      "",
+      "https://countriesnow.space/api/v0.1/countries",
+    );
+    apiManagerForCountry.makeCountryApiRequest().then((cities): void => {
+      const filteredCities = cities
+        .filter((city) =>
+          city.toLowerCase().startsWith(cityPrefix.toLowerCase()),
+        )
+        .slice(0, 5);
+      if (filteredCities.length) {
+        this.showSuggestedCityNameOnUi(filteredCities);
+        this.suggestionsElement?.classList.add("active");
+      } else this.suggestionsElement?.classList.remove("active");
+    });
+  };
 
   showSuggestedCityNameOnUi(filteredCities: CitiesType) {
     const listElements = filteredCities.map((cityName) =>
@@ -216,18 +167,5 @@ class WeatherApp {
 
 // window.onload = initializeApp;
 window.onload = (): void => {
-  const weatherApp: WeatherApp = new WeatherApp();
-  weatherApp.initializeApp();
+  new WeatherApp();
 };
-type ProductType = { name: string; price: number };
-const product: ProductType = {
-  name: "Coffee mug",
-  price: 33,
-};
-const products: ProductType[] = [product, product, product];
-
-const totalPrice: number = products.reduce(
-  (acc, curVal) => acc + curVal.price,
-  0,
-);
-console.log(totalPrice);
