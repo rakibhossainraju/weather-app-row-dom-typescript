@@ -1,4 +1,3 @@
-import './style.css';
 import {
   ApiManager,
   type CitiesType,
@@ -103,21 +102,27 @@ class WeatherApp {
   };
 
   showSuggestedCityNameOnUi(filteredCities: CitiesType) {
+    if (!this.suggestionsElement) return;
+
     const listElements = filteredCities.map(cityName =>
       this.generateSuggestionLiTemplate(cityName)
     );
-    this.suggestionsElement &&
-      (this.suggestionsElement.innerHTML = listElements.join(''));
+    this.suggestionsElement.innerHTML = listElements.join('');
 
-    const suggestedLiElements: NodeListOf<HTMLLIElement> | undefined =
-      this.suggestionsElement?.querySelectorAll('.search-bar__suggestion');
-    suggestedLiElements?.forEach((liElement: HTMLLIElement) => {
-      liElement?.addEventListener('click', () => {
-        this.inputElement && (this.inputElement.value = liElement?.innerText);
-        this.suggestionsElement && (this.suggestionsElement.innerHTML = '');
-        this.suggestionsElement?.classList.remove('active');
-      });
-    });
+    const suggestedLiElements =
+      this.suggestionsElement.querySelectorAll<HTMLLIElement>(
+        '.search-bar__suggestion'
+      );
+    suggestedLiElements.forEach(liElement =>
+      this.handleSuggestionClick(liElement)
+    );
+  }
+
+  handleSuggestionClick(suggestionElement: HTMLLIElement) {
+    if (!this.inputElement || !this.suggestionsElement) return;
+    this.inputElement.value = suggestionElement.innerText;
+    this.suggestionsElement.innerHTML = '';
+    this.suggestionsElement.classList.remove('active');
   }
 
   generateSuggestionLiTemplate(textContent: string): string {
@@ -125,6 +130,17 @@ class WeatherApp {
   }
 
   updateUiWithWeatherData(weatherData: WeatherDataType) {
+    if (
+      !this.weatherDetailsElement ||
+      !this.weatherImgElement ||
+      !this.temperatureElement ||
+      !this.cityNameElement ||
+      !this.humidityElement ||
+      !this.countryNameElement ||
+      !this.windSpeedElement
+    )
+      return;
+
     const {
       weather,
       main: { temp, humidity },
@@ -135,20 +151,16 @@ class WeatherApp {
 
     const { description, icon } = weather[0];
     const imageUrl = `https://openweathermap.org/img/wn/${icon}@4x.png`;
-    this.weatherDetailsElement &&
-      (this.weatherDetailsElement.textContent = description);
-    this.weatherImgElement &&
-      (this.weatherImgElement.style.backgroundImage = `url(${imageUrl})`);
-    this.cityNameElement && (this.cityNameElement.textContent = name);
-    this.countryNameElement && (this.countryNameElement.textContent = country);
-    this.temperatureElement &&
-      (this.temperatureElement.textContent = Math.round(temp).toString());
-    this.humidityElement && (this.humidityElement.textContent = humidity);
-    this.windSpeedElement && (this.windSpeedElement.textContent = speed);
+    this.weatherDetailsElement.textContent = description;
+    this.weatherImgElement.style.backgroundImage = `url(${imageUrl})`;
+    this.cityNameElement.textContent = name;
+    this.countryNameElement.textContent = country;
+    this.temperatureElement.textContent = Math.round(temp).toString();
+    this.humidityElement.textContent = humidity;
+    this.windSpeedElement.textContent = speed;
   }
 }
 
-// window.onload = initializeApp;
-window.onload = (): void => {
+document.addEventListener('DOMContentLoaded', () => {
   new WeatherApp();
-};
+});
