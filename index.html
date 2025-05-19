@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
     <title>Weather app</title>
   </head>
   <body>
@@ -28,14 +28,20 @@
             </ul>
           </div>
           <button class="search-bar__btn">
-            <img class="search-bar__btn-icon" src="images/search.png" alt="search bar icon" />
+            <img
+              class="search-bar__btn-icon"
+              src="images/search.png"
+              alt="search bar icon"
+            />
           </button>
         </form>
         <p class="weather-card__weather-description">clear sky</p>
         <div class="weather-card__weather-image"></div>
 
         <div class="weather-card__weather-info">
-          <h1 class="weather-card__temperature"><span class="weather-card__temperature-value">20</span>&deg;c</h1>
+          <h1 class="weather-card__temperature">
+            <span class="weather-card__temperature-value">20</span>&deg;c
+          </h1>
           <h2 class="weather-card__location">
             <span class="weather-card__city">Dhaka</span>,
             <span class="weather-card__country">BD</span>
@@ -43,16 +49,28 @@
         </div>
         <div class="weather-card__additional-info">
           <div class="weather-card__info">
-            <img class="weather-card__info-icon" src="/images/humidity.png" alt="humidity icon" />
+            <img
+              class="weather-card__info-icon"
+              src="/images/humidity.png"
+              alt="humidity icon"
+            />
             <div class="weather-card__info-content">
-              <h3 class="weather-card__info-text"><span class="weather-card__humidity-text-value">60</span>%</h3>
+              <h3 class="weather-card__info-text">
+                <span class="weather-card__humidity-text-value">60</span>%
+              </h3>
               <h3 class="weather-card__info-text">Humidity</h3>
             </div>
           </div>
           <div class="weather-card__info">
-            <img class="weather-card__info-icon" src="/images/wind.png" alt="wind icon" />
+            <img
+              class="weather-card__info-icon"
+              src="/images/wind.png"
+              alt="wind icon"
+            />
             <div class="weather-card__info-content">
-              <h3 class="weather-card__info-text"><span class="weather-card__wind-text-value">120</span>km/h</h3>
+              <h3 class="weather-card__info-text">
+                <span class="weather-card__wind-text-value">120</span>km/h
+              </h3>
               <h3 class="weather-card__info-text">Wind Speed</h3>
             </div>
           </div>
